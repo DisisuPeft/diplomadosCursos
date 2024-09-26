@@ -4,30 +4,36 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
+use App\Interface\UserRepositoryInterface;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Session;
 use Inertia\Inertia;
 use Inertia\Response;
 
 class AuthenticatedSessionController extends Controller
 {
-    /**
-     * Display the login view.
-     */
-    public function create(): Response
+
+    protected $userRepository;
+
+    public function __construct(UserRepositoryInterface $userRepository)
     {
-        return Inertia::render('Auth/Login', [
-            'canResetPassword' => Route::has('password.request'),
-            'status' => session('status'),
-        ]);
+        $this->userRepository = $userRepository;
     }
+//    public function create(): Response
+//    {
+//        return Inertia::render('Auth/Login', [
+//            'canResetPassword' => Route::has('password.request'),
+//            'status' => session('status'),
+//        ]);
+//    }
 
     /**
-     * Handle an incoming authentication request.
+     * Que quede claro que seguire trabajando en esto de los registros porque si los creo y 3 veces
      */
     public function store(LoginRequest $request): RedirectResponse
     {
@@ -48,7 +54,18 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect()->intended(RouteServiceProvider::HOME);
+//        Session::put();
+        $user = Auth::user();
+
+        Session::put('user', $user);
+        //1 para login, 99 para logout
+        $put_activity = $this->userRepository->activity([$user->id, 1]);
+//        dd($put_activity);
+        if ($put_activity) {
+            return redirect()->intended(RouteServiceProvider::HOME);
+        }else{
+            return back()->withErrors('Ocurrio un error al registar al usuario en la sesión.');
+        }
     }
 
     /**
@@ -56,12 +73,22 @@ class AuthenticatedSessionController extends Controller
      */
     public function destroy(Request $request): RedirectResponse
     {
-        Auth::guard('web')->logout();
+        $user = Session::get('user');
 
-        $request->session()->invalidate();
+        $forget_activity = $this->userRepository->activity([$user->id, 99]);
 
-        $request->session()->regenerateToken();
+        if ($forget_activity) {
+            Session::forget('user');
 
-        return redirect('/');
+            Auth::guard('web')->logout();
+
+            $request->session()->invalidate();
+
+            $request->session()->regenerateToken();
+
+            return redirect('/');
+        }else{
+            return back()->withErrors('Ocurrio un error al registar al usuario en la sesión.');
+        }
     }
 }

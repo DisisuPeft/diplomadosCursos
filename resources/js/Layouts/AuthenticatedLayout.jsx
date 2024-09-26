@@ -13,9 +13,14 @@ import { mdiCalendarMonth } from '@mdi/js';
 import { mdiCog } from '@mdi/js';
 import { mdiAccountTie } from '@mdi/js';
 import { mdiAccountGroupOutline } from '@mdi/js';
-export default function Authenticated({ user, header, children }) {
+export default function Authenticated({ user, onComponentSelected, children }) {
     const [showingNavigation, setShowingNavigation] = useState(false);
     const [showMenuDropdown, setShowMenuDropdown] = useState(false);
+    const handleComponentSelected = (component) => {
+        if (onComponentSelected){
+            onComponentSelected(component)
+        }
+    }
     // console.log(showMenuDropdown)
     return (
         <div className="flex h-screen bg-gray-100">
@@ -27,44 +32,46 @@ export default function Authenticated({ user, header, children }) {
                     <nav className="flex-1 px-2 py-4">
                         <ul className="space-y-1.5">
                             <li>
-                                <a href="#"
-                                   className="flex items-center px-4 py-2 text-gray-700 hover:bg-sky-500 hover:text-white rounded-md">
+                                <button
+                                   className="flex items-center px-4 py-2 text-gray-700 hover:bg-sky-500 hover:text-white rounded-full w-[230px]">
                                     <Icon path={mdiAccountSchool} size={1.5}/> <p className="ml-2">Perfil</p>
-                                </a>
+                                </button>
                             </li>
                             <li>
-                                <a href="#"
-                                   className="flex items-center px-4 py-2 mt-2 text-gray-700 hover:bg-sky-500 hover:text-white rounded-md">
+                                <button
+                                   className="flex items-center px-4 py-2 mt-2 text-gray-700 hover:bg-sky-500 hover:text-white rounded-full w-[230px]">
                                     <Icon path={mdiSchool} size={1.5}/> <p className="ml-2">Calificaciones</p>
-                                </a>
+                                </button>
                             </li>
                             <li>
-                                <a href="#"
-                                   className="flex items-center px-4 py-2 mt-2 text-gray-700 hover:bg-sky-500 hover:text-white rounded-md">
+                                <button
+                                   className="flex items-center px-4 py-2 mt-2 text-gray-700 hover:bg-sky-500 hover:text-white rounded-full w-[230px]">
                                     <Icon path={mdiCalendarMonth} size={1.5}/> <p className="ml-2">Calendario</p>
-                                </a>
+                                </button>
                             </li>
                             <li>
-                                <a href="#"
-                                   className="flex items-center px-4 py-2 mt-2 text-gray-700 hover:bg-sky-500 hover:text-white rounded-md">
+                                <button
+                                   className="flex items-center px-4 py-2 mt-2 text-gray-700 hover:bg-sky-500 hover:text-white rounded-full w-[230px]">
                                     <Icon path={mdiCog} size={1.5}/> <p className="ml-2">Preferencias</p>
-                                </a>
+                                </button>
                             </li>
                             <li>
-                                <a
-                                   className="flex items-center px-4 py-2 mt-2 text-gray-700 hover:bg-sky-500 hover:text-white rounded-md" onClick={() => setShowMenuDropdown((previousState) => !previousState)}>
+                                <button
+                                   className="flex items-center px-4 py-2 mt-2 text-gray-700 hover:bg-sky-500 hover:text-white rounded-full w-[230px]" onClick={() => setShowMenuDropdown((previousState) => !previousState)}>
                                     <Icon path={mdiAccountTie} size={1.5}/> <p className="ml-2">Administrador</p>
-                                </a>
+                                </button>
 
                                 <div className={(showMenuDropdown ? 'flex justify-center': 'w-full overflow-hidden transition-[height] duration-300 hidden')}>
                                     <div className="hs-accordion-group ps-3 pt-2">
                                         <ul>
                                             <li className="hs-accordion" id="users-accordion-sub-1">
-                                                <a
-                                                    className="flex items-center px-4 py-2 mt-2 text-gray-700 hover:bg-sky-500 hover:text-white rounded-md">
+                                                <button
+                                                    className="flex items-center px-4 py-2 mt-2 text-gray-700 hover:bg-sky-500 hover:text-white rounded-full w-[230px]"
+                                                    onClick={() => handleComponentSelected('usuarios')}
+                                                >
                                                     <Icon path={mdiAccountGroupOutline} size={1.5}/>
                                                     <p className="ml-2">Usuarios</p>
-                                                </a>
+                                                </button>
 
                                                 {/*<div id="users-accordion-sub-1"*/}
                                                 {/*     className="hs-accordion-content w-full overflow-hidden transition-[height] duration-300 hidden"*/}
@@ -113,13 +120,15 @@ export default function Authenticated({ user, header, children }) {
                     </div>
                     <div className="flex items-center pr-10">
 
-                        <button
-                            className="flex items-center text-gray-500 hover:text-gray-700 focus:outline-none">
-                            <p className="hidden md:flex text-lg font-medium text-gray-400 pr-2 hover:text-gray-800">
-                                Cerrar sesión
-                            </p>
-                            <Icon path={mdiLogout} size={1.5}/>
-                        </button>
+                        <Link href={route('logout')} method="post" as="button" className="flex items-center text-gray-500 hover:text-gray-700 focus:outline-none">
+                            {/*<button*/}
+                            {/*    className="flex items-center text-gray-500 hover:text-gray-700 focus:outline-none">*/}
+                                <p className="hidden md:flex text-lg font-medium text-gray-400 pr-2 hover:text-gray-800">
+                                    Cerrar sesión
+                                </p>
+                                <Icon path={mdiLogout} size={1.5}/>
+                            {/*</button>*/}
+                        </Link>
                     </div>
                 </div>
                 <div className="p-4">

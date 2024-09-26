@@ -4,7 +4,9 @@ namespace App\Repositories;
 
 use App\Interface\UserRepositoryInterface;
 use App\Models\User;
+use App\Models\UserActivityLog;
 use App\Models\UserProfile;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
@@ -32,5 +34,24 @@ class UserRepository implements UserRepositoryInterface
         }
         DB::rollBack();
         return [false, "Error al registrar al usuario"];
+    }
+
+    public function activity($data): bool
+    {
+        DB::beginTransaction();
+        $date = Carbon::now();
+        $insert = [
+            'user_id' => $data[0],
+            'status' => $data[1],
+            'activity' => $data[1] == 1 ? 'login' : 'logout',
+            'date_time' => $date->toDate()
+        ];
+        $log = DB::table('user_activity_logs')->insert($insert);
+        if ($log){
+            DB::commit();
+            return true;
+        }
+        DB::rollBack();
+        return false;
     }
 }

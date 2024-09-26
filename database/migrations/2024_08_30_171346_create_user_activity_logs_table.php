@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->bigInteger('user_id')->nullable();
             $table->bigInteger('status')->nullable();
+            $table->string('activity')->nullable();
             $table->date('date_time')->nullable();
             $table->timestamps();
         });
