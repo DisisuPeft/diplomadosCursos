@@ -35,11 +35,16 @@ class RegisteredUserController extends Controller
         $register = $this->auth->register($request);
 
         if ($register[0]){
-            event(new Registered($register[3]));
+            $log = $this->auth->activity([$register[2]->id, 1, "Nuevo usuario registrado"]);
 
-            Auth::login($register[3]);
+            if($log){
+                event(new Registered($register[3]));
 
-            return redirect(RouteServiceProvider::HOME);
+                Auth::login($register[3]);
+    
+                return redirect(RouteServiceProvider::HOME);
+            }
+            return back()->withErrors("Error al mostrar el registro. Debe ir al apartado de 'Soporte'.");
         }else{
             return back()->withErrors($register[1]);
         }

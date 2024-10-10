@@ -17,7 +17,7 @@ class UserRepository implements UserRepositoryInterface
         $user = User::create([
             'email' => $req->email,
             'password' => Hash::make($req->password),
-            'type_user' => 1,
+            'type_user' => 3,
         ]);
         if ($user){
             $profile = UserProfile::create([
@@ -40,13 +40,12 @@ class UserRepository implements UserRepositoryInterface
     {
         DB::beginTransaction();
         $date = Carbon::now();
-        $insert = [
+        $log = UserActivityLog::create([
             'user_id' => $data[0],
             'status' => $data[1],
-            'activity' => $data[1] == 1 ? 'login' : 'logout',
+            'activity' => $data[2],
             'date_time' => $date->toDate()
-        ];
-        $log = DB::table('user_activity_logs')->insert($insert);
+        ]);
         if ($log){
             DB::commit();
             return true;

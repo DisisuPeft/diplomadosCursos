@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -20,6 +21,8 @@ class MainController extends Controller
 
     public function dashboard(): \Inertia\Response
     {
-        return Inertia::render('Dashboard');
+        return Inertia::render('Dashboard', [
+            'usuarios' => User::with(['profile', 'userLogs'])->where('id', '<>', auth()->user()->id)->get(),
+        ]);
     }
 }

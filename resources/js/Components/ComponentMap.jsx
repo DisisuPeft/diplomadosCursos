@@ -1,7 +1,7 @@
-import Usuarios from "@/Pages/AdminComponents/Usuarios.jsx";
+import Usuarios from "@/Pages/Admin/Usuarios.jsx";
 
 const componentMap = {
-    usuarios: <Usuarios/>
-}
+    usuarios: Usuarios,
+};
 
 export default componentMap;

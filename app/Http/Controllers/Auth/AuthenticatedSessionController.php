@@ -58,13 +58,13 @@ class AuthenticatedSessionController extends Controller
         $user = Auth::user();
 
         Session::put('user', $user);
-        //1 para login, 99 para logout
-        $put_activity = $this->userRepository->activity([$user->id, 1]);
+        //1 activo, 99 para no activo                     //id user, status, activity                      
+        $put_activity = $this->userRepository->activity([$user->id, 1, 'Inicio de sesión']);
 //        dd($put_activity);
         if ($put_activity) {
             return redirect()->intended(RouteServiceProvider::HOME);
         }else{
-            return back()->withErrors('Ocurrio un error al registar al usuario en la sesión.');
+            return back()->withErrors('Ocurrio un error al registar al usuario en el registro de seguimiento. Informar en el apartado de soporte');
         }
     }
 
@@ -75,7 +75,7 @@ class AuthenticatedSessionController extends Controller
     {
         $user = Session::get('user');
 
-        $forget_activity = $this->userRepository->activity([$user->id, 99]);
+        $forget_activity = $this->userRepository->activity([$user->id, 99, 'Cierre de sesión']);
 
         if ($forget_activity) {
             Session::forget('user');
