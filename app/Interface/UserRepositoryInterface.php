@@ -4,7 +4,7 @@ namespace App\Interface;
 
 interface UserRepositoryInterface
 {
-    public function register($req);
+    public function register($req, $from);
 
     public function activity($data);
 }

@@ -3,7 +3,9 @@ import { Head } from "@inertiajs/react";
 import { useState, useEffect } from "react";
 import ComponentMap from "@/Components/ComponentMap.jsx";
 
-export default function Dashboard({ auth, usuarios }) {
+export default function Dashboard({ auth, usuarios, flash }) {
+
+
     const [selectedComponent, setSelectedComponent] = useState(() => {
         return localStorage.getItem("componente");
     });
@@ -15,7 +17,7 @@ export default function Dashboard({ auth, usuarios }) {
     const renderComponent = () => {
         const SelectedComponent = ComponentMap[selectedComponent];
         return (
-            <SelectedComponent usuarios={usuarios} /> || (
+            <SelectedComponent usuarios={usuarios} auth={auth}/> || (
                 <div className="p-6 text-gray-900">Bienvenido!</div>
             )
         );

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Auth;
 
 use App\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
@@ -27,6 +27,12 @@ class RegisterRequest extends FormRequest
             'p_apellido' => 'required',
             'email' => 'required|email|unique:'.User::class,
             'password' => 'required|min:8',
+//            's_apellido' => 'nullable|string',  // No es requerido
+//            'edad' => 'nullable|integer',       // No es requerido
+//            'fecha_nacimiento' => 'nullable|date', // No es requerido
+//            'sexo' => 'nullable|string',        // No es requerido
+//            'nivel_educativo' => 'nullable|string', // No es requerido
+//            'telefono' => 'nullable|string',    // No es requerido
         ];
     }
 

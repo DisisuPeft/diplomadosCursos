@@ -5,11 +5,18 @@ import InputLabel from "@/Components/InputLabel";
 import PrimaryButton from "@/Components/PrimaryButton";
 import TextInput from "@/Components/TextInput";
 import { Head, Link, useForm } from "@inertiajs/react";
+import {alertSuccess, Toast} from "@/alerts/alert.js";
 
-export default function Register() {
+export default function Register({flash, setComponent}) {
     const { data, setData, post, processing, errors, reset } = useForm({
         nombre: "",
         p_apellido: "",
+        s_apellido: "",
+        edad: null,
+        fecha_nacimiento: "",
+        sexo: "",
+        nivel_educativo: "",
+        telefono: "",
         email: "",
         password: "",
         password_confirmation: "",
@@ -24,9 +31,16 @@ export default function Register() {
     const submit = (e) => {
         e.preventDefault();
 
-        post(route("register"));
+        post(route('register.store', "register"), {
+            onSuccess: () => {
+                // if (flash.message){
+                alertSuccess('Registro exitoso. Inicia sesión para continuar...')
+                reset()
+                setComponent("login")
+                // }
+            }
+        })
     };
-
     return (
         <form onSubmit={submit}>
             <div>

@@ -9,6 +9,7 @@ export default function TablaUsuarios({ users }) {
         );
     }
 
+    console.log(users)
     return (
         <div>
             <table className="border-collapse border border-slate-500">

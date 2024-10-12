@@ -4,13 +4,16 @@ import TablaUsuarios from "./Components/Tables/TableUsuarios";
 import Modal from "@/Components/Modal";
 import FormUsuarios from "./Components/Tables/FormUsuarios";
 
-export default function Usuarios({ usuarios }) {
+export default function Usuarios({ usuarios, auth }) {
+    if (auth.user.type_user !== 1) {
+        return <div className="text-center p-[300px] bg-red-500 text-white text-[60px] font-bold">No tienes acceso a esta página</div>; // Mostrar mensaje de acceso denegado
+    }
     const [visible, setVisible] = useState(false);
 
     const close = () => {
         setVisible(false);
     };
-
+    // console.log(usuarios)
     return (
         <div>
             <div className="max-w-[1500px] mx-auto sm:px-6 lg:px-8">

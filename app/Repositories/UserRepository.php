@@ -12,17 +12,26 @@ use Illuminate\Support\Facades\Hash;
 
 class UserRepository implements UserRepositoryInterface
 {
-    public function register($req){
+    //la idea es que venga un parametro que indique que se esta registrando desde el welcome o el administrador
+    public function register($req, $from){
         DB::beginTransaction();
+//        dd($from == "register" );
         $user = User::create([
             'email' => $req->email,
             'password' => Hash::make($req->password),
-            'type_user' => 3,
+            'type_user' => $from == "register" ? 3 : $req->input('type_user'),
         ]);
+//        dd($user);
         if ($user){
             $profile = UserProfile::create([
                 'nombre' => trim($req->nombre),
-                'apellido' => trim($req->p_apellido),
+                'p_apellido' => trim($req->p_apellido),
+                's_apellido' => trim($req->s_apellido),
+                'edad' => $req->input('edad'),
+                'fecha_nacimiento' => $req->input('fecha_nacimiento'),
+                'sexo' => $req->input('sexo'),
+                'nivel_educativo' => $req->input('nivel_educativo'),
+                'telefono' => $req->input('telefono'),
                 'user_id' => $user->id,
             ]);
             if ($profile){

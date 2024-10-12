@@ -2,7 +2,7 @@ import { Link, Head } from "@inertiajs/react";
 import Guest from "@/Layouts/GuestLayout.jsx";
 import "../estilos/MainStyles.css";
 import { useState } from "react";
-export default function Welcome({ auth }) {
+export default function Welcome({ auth, flash }) {
     const match = window.matchMedia("(max-width: 768px)");
     const isMobile = match.matches;
     const [activeRegister, setActiveRegister] = useState(null);
@@ -21,7 +21,7 @@ export default function Welcome({ auth }) {
         setActiveRegister(null);
     };
     return (
-        <Guest active={activeRegister} setActiveRegisterNull={handleSetNull}>
+        <Guest flash={flash} active={activeRegister} setActiveRegisterNull={handleSetNull}>
             <div
                 className="grid grid-rows-1 flex justify-start lg:w-full md:w-[900px] md:h-[900px] lg:h-[800px]"
                 style={backImage}

@@ -7,7 +7,7 @@ import Register from "@/Pages/Auth/Register.jsx";
 import Icon from "@mdi/react";
 import { mdiClose } from "@mdi/js";
 // import { useEffect, useRef } from "react";
-export default function Guest({ children, active, setActiveRegisterNull }) {
+export default function Guest({ children, active, setActiveRegisterNull, flash }) {
     const [showModal, setShowModal] = useState(false);
 
     const openModal = () => setShowModal(true);
@@ -39,6 +39,10 @@ export default function Guest({ children, active, setActiveRegisterNull }) {
         }
         // console.log(newVal);
     };
+
+    const handleComponent = (value) => {
+        setActiveTab(value)
+    }
 
     useEffect(() => {
         handleRegister(active);
@@ -220,7 +224,7 @@ export default function Guest({ children, active, setActiveRegisterNull }) {
                                 <div className="mt-4 p-10">
                                     {activeTab === "login" && <Login></Login>}
                                     {activeTab === "register" && (
-                                        <Register></Register>
+                                        <Register flash={flash} setComponent={handleComponent}></Register>
                                     )}
                                 </div>
                             </Modal>
