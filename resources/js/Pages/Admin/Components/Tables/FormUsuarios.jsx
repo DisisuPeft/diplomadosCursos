@@ -1,9 +1,11 @@
 import { useForm } from "@inertiajs/react";
-import react from "react";
+import react, {useEffect} from "react";
 import InputLabel from "@/Components/InputLabel";
 import TextInput from "@/Components/TextInput";
 import InputError from "@/Components/InputError";
 import PrimaryButton from "@/Components/PrimaryButton";
+import {Toast} from "@/alerts/alert.js";
+import ToastAlert from "@/alerts/Toast.jsx";
 
 export default function FormUsuarios({}) {
     const { data, setData, post, processing, errors, reset, put } = useForm({
@@ -18,17 +20,38 @@ export default function FormUsuarios({}) {
         email: "",
         password: "",
         password_confirmation: "",
+        type_user: null
     });
+
+    const type = [
+        {id: 1, name: "Administrador"},
+        {id: 2, name: "Docente"},
+        {id: 3, name: "Alumno"},
+    ]
+
+    // useEffect(() => {
+    //     if (data.password !== data.password_confirmation){
+    //
+    //     }
+    // }, [data.password]);
 
     const submit = (e) => {
         e.preventDefault();
-        console.log(e);
+        post(route('admin.registro', 'administrador'), {
+            onSuccess: (page) => {
+                console.log(page)
+                // Toast(`${}`)
+            },
+            onError: (errors) => {
+                Toast(`${errors[0]}`, 'error')
+            }
+        })
     };
     return (
         <div className="p-[100px]">
             <form onSubmit={submit}>
                 <div>
-                    <InputLabel htmlFor="name" value="Nombre" />
+                    <InputLabel htmlFor="name" value="Nombre"/>
 
                     <TextInput
                         id="name"
@@ -41,10 +64,10 @@ export default function FormUsuarios({}) {
                         required
                     />
 
-                    <InputError message={errors.nombre} className="mt-2" />
+                    <InputError message={errors.nombre} className="mt-2"/>
                 </div>
                 <div className="mt-4">
-                    <InputLabel htmlFor="p_apellido" value="Apellido paterno" />
+                    <InputLabel htmlFor="p_apellido" value="Apellido paterno"/>
 
                     <TextInput
                         id="p_apellido"
@@ -54,14 +77,13 @@ export default function FormUsuarios({}) {
                         autoComplete="p_apellido"
                         isFocused={true}
                         onChange={(e) => setData("p_apellido", e.target.value)}
-                        required
                     />
 
-                    <InputError message={errors.p_apellido} className="mt-2" />
+                    <InputError message={errors.p_apellido} className="mt-2"/>
                 </div>
 
                 <div className="mt-4">
-                    <InputLabel htmlFor="s_apellido" value="Apellido materno" />
+                    <InputLabel htmlFor="s_apellido" value="Apellido materno"/>
 
                     <TextInput
                         id="s_apellido"
@@ -71,14 +93,28 @@ export default function FormUsuarios({}) {
                         autoComplete="s_apellido"
                         isFocused={true}
                         onChange={(e) => setData("s_apellido", e.target.value)}
-                        required
                     />
 
-                    <InputError message={errors.p_apellido} className="mt-2" />
+                    <InputError message={errors.p_apellido} className="mt-2"/>
                 </div>
 
                 <div className="mt-4">
-                    <InputLabel htmlFor="email" value="Email" />
+                    <InputLabel htmlFor="type_user" value="Rol de usuario"/>
+
+                    <select id="my_type_user" className="w-full mt-1 block" value={data.type_user || ""} onChange={(e) => setData("type_user", parseInt(e.target.value, 10))}>
+                        <option value="">Seleccione una opción</option>
+                        {type.map((option) => (
+                            <option key={option.id} value={option.id}>
+                                {option.name}
+                            </option>
+                        ))}
+                    </select>
+
+                    <InputError message={errors.type_user} className="mt-2"/>
+                </div>
+
+                <div className="mt-4">
+                    <InputLabel htmlFor="email" value="Email"/>
 
                     <TextInput
                         id="email"
@@ -88,14 +124,13 @@ export default function FormUsuarios({}) {
                         className="mt-1 block w-full"
                         autoComplete="username"
                         onChange={(e) => setData("email", e.target.value)}
-                        required
                     />
 
-                    <InputError message={errors.email} className="mt-2" />
+                    <InputError message={errors.email} className="mt-2"/>
                 </div>
 
                 <div className="mt-4">
-                    <InputLabel htmlFor="password" value="Contraseña" />
+                    <InputLabel htmlFor="password" value="Contraseña"/>
 
                     <TextInput
                         id="password"
@@ -105,10 +140,9 @@ export default function FormUsuarios({}) {
                         className="mt-1 block w-full"
                         autoComplete="new-password"
                         onChange={(e) => setData("password", e.target.value)}
-                        required
                     />
 
-                    <InputError message={errors.password} className="mt-2" />
+                    <InputError message={errors.password} className="mt-2"/>
                 </div>
 
                 <div className="mt-4">
@@ -127,7 +161,6 @@ export default function FormUsuarios({}) {
                         onChange={(e) =>
                             setData("password_confirmation", e.target.value)
                         }
-                        required
                     />
 
                     <InputError

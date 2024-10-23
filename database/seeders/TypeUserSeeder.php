@@ -17,10 +17,10 @@ class TypeUserSeeder extends Seeder
            'name' => 'Administrador',
         ]);
         DB::table('type_user')->insert([
-            'name' => 'Docentes',
+            'name' => 'Docente',
         ]);
         DB::table('type_user')->insert([
-           'name' => 'Alumnos',
+           'name' => 'Alumno',
         ]);
     }
 }

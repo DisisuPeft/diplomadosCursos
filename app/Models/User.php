@@ -35,7 +35,7 @@ class User extends Authenticatable
     ];
 
     protected $with = [
-        'profile'
+        'profile', 'typeUser'
     ];
     /**
      * The attributes that should be cast.
@@ -49,10 +49,19 @@ class User extends Authenticatable
 
     public function profile(): \Illuminate\Database\Eloquent\Relations\HasOne
     {
-        return $this->hasOne(UserProfile::class);
+        return $this->hasOne(UserProfile::class)->orderBy('nombre', 'asc');
     }
 
     public function userLogs(){
-        return $this->hasMany(UserActivityLog::class);
+        return $this->hasMany(UserActivityLog::class)->orderBy('id', 'desc');
     }
+
+    public function typeUser(){
+        return $this->belongsTo(TypeUser::class, 'type_user', 'id');
+    }
+
+    public function checkType($typeName){
+        return $this->typeUser && $this->typeUser->name === $typeName;
+    }
+
 }

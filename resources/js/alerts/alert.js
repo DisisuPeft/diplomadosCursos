@@ -1,17 +1,21 @@
 import Swal from "sweetalert2";
-export const Toast = (message) => {
-    Swal.mixin({
-        title: message,
+export const Toast = (message, icon) => {
+    const toast = Swal.mixin({
         toast: true,
         position: "top-end",
         showConfirmButton: false,
-        timer: 3000,
         timerProgressBar: true,
-        didOpen: (toast) => {
-            toast.onmouseenter = Swal.stopTimer;
-            toast.onmouseleave = Swal.resumeTimer;
-        }
+        timer: 5000,
+        // didOpen: (toast) => {
+        //     toast.onmouseenter = Swal.stopTimer;
+        //     toast.onmouseleave = Swal.resumeTimer;
+        // }
     });
+
+    toast.fire({
+        icon: icon,
+        title: message,
+    })
 }
 
 

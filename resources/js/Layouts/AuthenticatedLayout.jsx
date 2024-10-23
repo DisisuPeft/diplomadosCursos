@@ -1,4 +1,4 @@
-import { useState } from "react";
+import {useEffect, useState} from "react";
 import ApplicationLogo from "@/Components/ApplicationLogo";
 import Dropdown from "@/Components/Dropdown";
 import NavLink from "@/Components/NavLink";
@@ -13,15 +13,38 @@ import { mdiCalendarMonth } from "@mdi/js";
 import { mdiCog } from "@mdi/js";
 import { mdiAccountTie } from "@mdi/js";
 import { mdiAccountGroupOutline } from "@mdi/js";
-export default function Authenticated({ user, onComponentSelected, children }) {
+export default function Authenticated({ user, children }) {
     const [showingNavigation, setShowingNavigation] = useState(false);
     const [showMenuDropdown, setShowMenuDropdown] = useState(false);
-    const handleComponentSelected = (component) => {
-        if (onComponentSelected) {
-            onComponentSelected(component);
-        }
-    };
-    // console.log(showMenuDropdown)
+
+    // const handleComponentSelected = (component) => {
+    //     if (onComponentSelected) {
+    //         // if (component === getComponenteState()) {
+    //         //     setSelected(true);
+    //         //     // setStyle('bg-sky-500 text-white');
+    //         //     localStorage.setItem('saveComponent', component)
+    //         // } else {
+    //         //     setSelected(false);
+    //         //     setStyle('');
+    //         // }
+    //         onComponentSelected(component);
+    //     }
+    // };
+
+    // const getComponenteState = () => {
+    //     return localStorage.getItem('componente')
+    // }
+
+    useEffect(() => {
+        // const saveComponent = localStorage.getItem('saveComponent')
+        // const componentActive = localStorage.getItem('componente')
+        // console.log(saveComponent, componentActive)
+        // if (saveComponent === componentActive){
+        //     setSelected(true);
+        //     setStyle('bg-sky-500 text-white');
+        // }
+    }, []);
+    // console.log(user)
     return (
         <div className="flex h-screen bg-gray-100">
             <div
@@ -40,14 +63,15 @@ export default function Authenticated({ user, onComponentSelected, children }) {
                         }
                     >
                         {" "}
-                        {user.profile.nombre} {user.profile.p_apellido}
+                        {user.profile?.nombre ?? "Sin"} {user.profile?.p_apellido ?? "nombre"}
                     </span>
                 </div>
                 <div className="flex flex-col flex-1 overflow-y-auto">
                     <nav className="flex-1 px-2 py-4">
                         <ul className="space-y-1.5">
                             <li>
-                                <button className="flex items-center px-4 py-2 text-gray-700 hover:bg-sky-500 hover:text-white rounded-full w-[230px]">
+                                <button className={`flex items-center px-4 py-2 mt-2 rounded-full w-[230px] text-gray-700 hover:bg-sky-500 hover:text-white`}
+                                >
                                     <Icon path={mdiAccountSchool} size={1.5} />{" "}
                                     <p className="ml-2">Perfil</p>
                                 </button>
@@ -70,7 +94,7 @@ export default function Authenticated({ user, onComponentSelected, children }) {
                                     <p className="ml-2">Preferencias</p>
                                 </button>
                             </li>
-                            {user.type_user === 1 && (
+                            {user.type_user?.id === 1 && (
                                 <li>
                                     <button
                                         className="flex items-center px-4 py-2 mt-2 text-gray-700 hover:bg-sky-500 hover:text-white rounded-full w-[230px]"
@@ -98,13 +122,13 @@ export default function Authenticated({ user, onComponentSelected, children }) {
                                                     className="hs-accordion"
                                                     id="users-accordion-sub-1"
                                                 >
-                                                    <button
-                                                        className="flex items-center px-4 py-2 mt-2 text-gray-700 hover:bg-sky-500 hover:text-white rounded-full w-[230px]"
-                                                        onClick={() =>
-                                                            handleComponentSelected(
-                                                                "usuarios"
-                                                            )
-                                                        }
+                                                    <Link
+                                                        className={`flex items-center px-4 py-2 mt-2 rounded-full w-[230px] text-gray-700 hover:bg-sky-500 hover:text-white`}
+                                                        as="button"
+                                                        type="button"
+                                                        href={route('admin.usuarios')}
+                                                        preserveScroll
+                                                        preserveState
                                                     >
                                                         <Icon
                                                             path={
@@ -115,7 +139,7 @@ export default function Authenticated({ user, onComponentSelected, children }) {
                                                         <p className="ml-2">
                                                             Usuarios
                                                         </p>
-                                                    </button>
+                                                    </Link>
 
                                                     {/*<div id="users-accordion-sub-1"*/}
                                                     {/*     className="hs-accordion-content w-full overflow-hidden transition-[height] duration-300 hidden"*/}

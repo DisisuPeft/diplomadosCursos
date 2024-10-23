@@ -29,6 +29,7 @@ class RegisteredUserController extends Controller
 
     public function store(RegisterRequest $request, $from): RedirectResponse
     {
+//        dd($request, $from);
         $request->validated();
 
         $register = $this->auth->register($request, $from);

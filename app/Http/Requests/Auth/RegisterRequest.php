@@ -44,6 +44,7 @@ class RegisterRequest extends FormRequest
             'email.email' => 'El campo email no es valido',
             'email.unique' => 'El email ya esta registrado',
             'password.required' => 'La contraseña es obligatoria',
+            'password.min' => 'La contraseña debe ser al menos de 8 carácteres',
         ];
     }
 }
