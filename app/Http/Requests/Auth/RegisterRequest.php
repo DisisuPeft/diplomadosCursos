@@ -4,6 +4,7 @@ namespace App\Http\Requests\Auth;
 
 use App\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class RegisterRequest extends FormRequest
 {
@@ -22,17 +23,24 @@ class RegisterRequest extends FormRequest
      */
     public function rules(): array
     {
+        $id = $this->route('id');
+
         return [
             'nombre' => 'required',
             'p_apellido' => 'required',
-            'email' => 'required|email|unique:'.User::class,
-            'password' => 'required|min:8',
-//            's_apellido' => 'nullable|string',  // No es requerido
-//            'edad' => 'nullable|integer',       // No es requerido
-//            'fecha_nacimiento' => 'nullable|date', // No es requerido
-//            'sexo' => 'nullable|string',        // No es requerido
-//            'nivel_educativo' => 'nullable|string', // No es requerido
-//            'telefono' => 'nullable|string',    // No es requerido
+            'email' => [
+                'required',
+                'email',
+                Rule::unique('users', 'email')->ignore($id),
+            ],
+            'password' => $id ? 'nullable|min:8' : 'required|min:8',
+            //requeribles pero modificables
+            's_apellido' => 'nullable|string',  // No es requerido
+            'edad' => 'nullable|integer',       // No es requerido
+            'fecha_nacimiento' => 'nullable|date', // No es requerido
+            'sexo' => 'nullable|string',        // No es requerido
+            'nivel_educativo' => 'nullable|string', // No es requerido
+            'telefono' => 'nullable|string',    // No es requerido
         ];
     }
 

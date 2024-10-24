@@ -9,6 +9,7 @@ use App\Models\UserProfile;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+//use App\Models\UserProfile;
 
 class UserRepository implements UserRepositoryInterface
 {
@@ -43,6 +44,43 @@ class UserRepository implements UserRepositoryInterface
         }
         DB::rollBack();
         return [false, "Error al registrar al usuario"];
+    }
+
+    public function update($req, $id)
+    {
+        DB::beginTransaction();
+        $user = User::find($id);
+        if ($user){
+            $updateUser = $user->update([
+                'email' => $req->email,
+                'password' => $req->filled('password') ? Hash::make($req->password) : $user->password,
+                'type_user' => $req->type_user,
+            ]);
+            $profile = UserProfile::where('user_id', $user->id)->first();
+            if ($profile){
+                $updateProfile = $profile->update([
+                    'nombre' => trim($req->nombre),
+                    'p_apellido' => trim($req->p_apellido),
+                    's_apellido' => trim($req->s_apellido),
+                    'edad' => $req->edad,
+                    'fecha_nacimiento' => $req->fecha_nacimiento,
+                    'sexo' => $req->sexo,
+                    'nivel_educativo' => $req->nivel_educativo,
+                    'telefono' => $req->telefono,
+                ]);
+                if ($updateUser && $updateProfile){
+                    DB::commit();
+                    return [true, "Usuario actualizado exitosamente!", $user];
+                }
+                DB::rollBack();
+                return [false, "Error al actualizar el perfil y usuario"];
+            }
+            DB::rollBack();
+            return [false, "El perfil del usuario no fue encontrado en los registros"];
+        }
+        DB::rollBack();
+        return [false, "Usuario no encontrado en los registros"];
+
     }
 
     public function activity($data): bool

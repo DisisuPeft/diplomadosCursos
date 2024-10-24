@@ -1,26 +1,33 @@
 import { useForm } from "@inertiajs/react";
-import react, {useEffect} from "react";
-import InputLabel from "@/Components/InputLabel";
-import TextInput from "@/Components/TextInput";
-import InputError from "@/Components/InputError";
-import PrimaryButton from "@/Components/PrimaryButton";
+import react, {useEffect, useState} from "react";
+import InputLabel from "@/Components/InputLabel.jsx";
+import TextInput from "@/Components/TextInput.jsx";
+import InputError from "@/Components/InputError.jsx";
+import PrimaryButton from "@/Components/PrimaryButton.jsx";
 import {Toast} from "@/alerts/alert.js";
 import ToastAlert from "@/alerts/Toast.jsx";
+import Loader from "@/alerts/Loader.jsx";
+import LoaderCircle from "@/alerts/LoaderCircle.jsx";
+import {message} from "@/alerts/formatErrors.js"
+import Tooltip from "@/Components/Tooltip.jsx";
+import Icon from '@mdi/react';
+import { mdiHelp } from '@mdi/js';
 
-export default function FormUsuarios({}) {
+export default function FormUsuarios({flash, ifUser, closeModal}) {
+    const [loader, setLoader] = useState(false)
     const { data, setData, post, processing, errors, reset, put } = useForm({
-        nombre: "",
-        p_apellido: "",
-        s_apellido: "",
-        edad: null,
-        fecha_nacimiento: "",
-        sexo: "",
-        nivel_educativo: "",
-        telefono: "",
-        email: "",
+        nombre: ifUser ? ifUser.profile.nombre : "",
+        p_apellido: ifUser ? ifUser.profile.p_apellido : "",
+        s_apellido: ifUser ? ifUser.profile.s_apellido : "",
+        edad: ifUser ? ifUser.profile.edad : null,
+        fecha_nacimiento: ifUser ? ifUser.profile.fecha_nacimiento : "",
+        sexo: ifUser ? ifUser.profile.sexo : "",
+        nivel_educativo: ifUser ? ifUser.profile.nivel_educativo : "",
+        telefono: ifUser ? ifUser.profile.telefono : "",
+        email: ifUser ? ifUser.email : "",
         password: "",
         password_confirmation: "",
-        type_user: null
+        type_user: ifUser ? ifUser.type_user.id : ""
     });
 
     const type = [
@@ -29,24 +36,48 @@ export default function FormUsuarios({}) {
         {id: 3, name: "Alumno"},
     ]
 
-    // useEffect(() => {
-    //     if (data.password !== data.password_confirmation){
-    //
-    //     }
-    // }, [data.password]);
-
+    useEffect(() => {
+        // console.log(flash)
+    }, []);
+    // console.log(flash)
     const submit = (e) => {
         e.preventDefault();
-        post(route('admin.registro', 'administrador'), {
-            onSuccess: (page) => {
-                console.log(page)
-                // Toast(`${}`)
-            },
-            onError: (errors) => {
-                Toast(`${errors[0]}`, 'error')
-            }
-        })
+        setLoader(true)
+        if(!ifUser){
+            post(route('admin.registro', 'administrador'), {
+                onSuccess: (page) => {
+                    setLoader(false)
+                    Toast(`${message(page.props.flash.message) || 'Operación exitosa'}`, 'success')
+                    closeModal(false)
+                    reset()
+                },
+                onError: (errors) => {
+                    setLoader(false)
+                    // closeModal(false)
+                    Toast(`${message(errors)}`, 'error')
+                },
+                preserveScroll: true,
+                preserveState: true,
+            })
+        }else{
+            post(route('admin.usuario.update', ifUser.id), {
+                onSuccess: (page) => {
+                    setLoader(false)
+                    closeModal(false)
+                    Toast(`${message(page.props.flash.message) || 'Operación exitosa'}`, 'success')
+                },
+                onError: (errors) => {
+                    setLoader(false)
+                    // closeModal(false)
+                    Toast(`${message(errors)}`, 'error')
+                },
+                preserveScroll: true,
+                preserveState: true,
+            })
+        }
     };
+
+    // console.log(data)
     return (
         <div className="p-[100px]">
             <form onSubmit={submit}>
@@ -144,7 +175,13 @@ export default function FormUsuarios({}) {
 
                     <InputError message={errors.password} className="mt-2"/>
                 </div>
-
+                {ifUser &&
+                    <div className="mt-2">
+                        <Tooltip text="Al ingresar la contraseña en automatico se actualizara" position="right">
+                            <Icon path={mdiHelp} size={1}/>
+                        </Tooltip>
+                    </div>
+                }
                 <div className="mt-4">
                     <InputLabel
                         htmlFor="password_confirmation"
@@ -182,6 +219,8 @@ export default function FormUsuarios({}) {
                     </PrimaryButton>
                 </div>
             </form>
+            {/*<Loader visible={loader}/>*/}
+            <LoaderCircle visible={loader}/>
         </div>
     );
 }
